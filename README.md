@@ -11,3 +11,9 @@ npx playwright test
 ```bash
 npx playwright test [file_path]
 ```
+
+e.g.
+
+```bash
+npx playwright test "e2e\\会員登録項目最適化\\chat-gpt-default-occupations\\signup.spec.ts"
+```
