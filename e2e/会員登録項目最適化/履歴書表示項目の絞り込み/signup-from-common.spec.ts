@@ -1,0 +1,120 @@
+import { test, expect } from "@playwright/test";
+import path from "path";
+import { STORAGE_STATE_DIR } from "../../../playwright.config";
+import { login } from "../../fixtures/login";
+
+test.describe.configure({ mode: 'parallel' });
+
+// 直接会員登録画面から登録したユーザー
+const statePath = path.join(STORAGE_STATE_DIR, "user-uuu89.json");
+// 現在の職業: 正社員, 就業経験: 正社員
+// 職務経歴を複数持つ
+const loginIdPatterns = {
+	loginId: "uuu89@g.com",
+	password: "password",
+};
+
+test.beforeAll("login", async () => {
+	const loginId = loginIdPatterns.loginId;
+	const password = loginIdPatterns.password;
+	await login(loginId, password, statePath);
+});
+
+const applyFormPage =
+	"/user/apply/form/?aroute=0&work_id=860&delivery_id=0&PK=720CCF&company_id=1656";
+const applyConfirm =
+	"/user/apply/confirm/?aroute=0&work_id=860&delivery_id=0&PK=720CCF";
+const resume = "/user/setting/resume";
+
+test("apply form", async ({ browser }) => {
+	const context = await browser.newContext({ storageState: statePath });
+	const loggedInPage = await context.newPage();
+
+	await loggedInPage.goto(applyFormPage, { waitUntil: "load" });
+
+	await loggedInPage.waitForURL(/\/user\/apply\/form/);
+
+	// visible
+	await expect(
+		(await loggedInPage
+			.getByText("経験されたお仕事やスキル", { exact: true })
+			.count()) === 2
+	).toBeTruthy();
+	await expect(
+		loggedInPage.getByText("最終学歴", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("転職経験", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("現在（直近）の経験職種", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("直近の年収", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("職務経歴", { exact: true })
+	).toBeVisible();
+});
+
+test("apply confirm", async ({ browser }) => {
+	const context = await browser.newContext({ storageState: statePath });
+	const loggedInPage = await context.newPage();
+
+	await loggedInPage.goto(applyConfirm, { waitUntil: "load" });
+
+	await loggedInPage.waitForURL(/\/user\/apply\/confirm/);
+
+	// visible
+	await expect(
+		(await loggedInPage
+			.getByText("経験されたお仕事やスキル", { exact: true })
+			.count()) === 1 // 職務経歴（2）では登録していないので1件のみ
+	).toBeTruthy();
+	await expect(
+		loggedInPage.getByText("最終学歴", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("転職経験", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("現在(直近)の経験職種", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("直近の年収", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("職務経歴", { exact: true })
+	).toBeVisible();
+});
+
+test("resume", async ({ browser }) => {
+	const context = await browser.newContext({ storageState: statePath });
+	const loggedInPage = await context.newPage();
+
+	await loggedInPage.goto(resume, { waitUntil: "load" });
+
+	await loggedInPage.waitForURL(/\/user\/setting\/resume/);
+
+	// visible
+	await expect(
+		(await loggedInPage
+			.getByText("経験されたお仕事やスキル", { exact: true })
+			.count()) === 2
+	).toBeTruthy();
+	await expect(
+		loggedInPage.getByText("最終学歴", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("転職経験", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("現在（直近）の経験職種", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("直近の年収", { exact: true })
+	).toBeVisible();
+	await expect(
+		loggedInPage.getByText("職務経歴", { exact: true })
+	).toBeVisible();
+});
