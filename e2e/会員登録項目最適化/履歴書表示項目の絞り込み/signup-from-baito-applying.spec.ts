@@ -195,7 +195,7 @@ test("いいね一覧からの一括応募で応募内容編集画面", async ({
 
   await loggedInPage.waitForURL(/\/user\/favorite/);
 
-  await loggedInPage.waitForResponse(/\/user\/favorite\/list/)
+  await loggedInPage.waitForResponse(/\/user\/favorite\/list/);
   await expect(
     await loggedInPage.getByRole("link", { name: "応募へ進む" })
   ).toHaveCount(3);

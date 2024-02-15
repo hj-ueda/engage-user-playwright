@@ -37,10 +37,8 @@ test("バイト求人への応募内容編集画面", async ({ browser }) => {
 
   // visible
   await expect(
-    (await loggedInPage
-      .getByText("経験されたお仕事やスキル", { exact: true })
-      .count()) === 2
-  ).toBeTruthy();
+    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(2);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -68,10 +66,8 @@ test("バイト求人への応募内容確認画面", async ({ browser }) => {
 
   // visible
   await expect(
-    (await loggedInPage
-      .getByText("経験されたお仕事やスキル", { exact: true })
-      .count()) === 1 // 職務経歴（2）では登録していないので1件のみ
-  ).toBeTruthy();
+    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true }) // 職務経歴（2）では登録していないので1件のみ
+  ).toHaveCount(1);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -99,10 +95,8 @@ test("resume", async ({ browser }) => {
 
   // visible
   await expect(
-    (await loggedInPage
-      .getByText("経験されたお仕事やスキル", { exact: true })
-      .count()) === 2
-  ).toBeTruthy();
+    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(2);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
