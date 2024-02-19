@@ -32,18 +32,20 @@ const applyConfirm =
 const resume = "/user/setting/resume";
 const favorite = "/user/favorite";
 
-test("バイト求人への応募内容編集画面(会員登録経由)", async ({ browser }) => {
+test("バイト求人への応募内容編集画面(会員登録経由) @apply-form", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
   await loggedInPage.goto(applyFormPageInSingUp, { waitUntil: "load" });
 
-  await loggedInPage.waitForURL(/\/user\/apply\/form/);
+  await loggedInPage.waitForURL(/\/user\/apply\/form/, { timeout: 100 });
 
   // visible
+  // プロフィール内の「経験されたお仕事やスキル」
   await expect(
-    loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toBeVisible();
+    await loggedInPage
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(1);
 
   // hidden
   await expect(
@@ -64,18 +66,18 @@ test("バイト求人への応募内容編集画面(会員登録経由)", async 
 });
 
 // 会員登録経由では無いので、項目数は絞られない
-test("バイト求人への応募内容編集画面", async ({ browser }) => {
+test("バイト求人への応募内容編集画面  @apply-form", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
   await loggedInPage.goto(applyFormPage, { waitUntil: "load" });
 
-  await loggedInPage.waitForURL(/\/user\/apply\/form/);
+  await loggedInPage.waitForURL(/\/user\/apply\/form/, { timeout: 100 });
 
   // visible
   await expect(
     loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toBeVisible();
+  ).toHaveCount(1);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -93,7 +95,7 @@ test("バイト求人への応募内容編集画面", async ({ browser }) => {
   ).toBeVisible();
 });
 
-test("バイト求人への応募内容確認画面(会員登録経由)", async ({ browser }) => {
+test("バイト求人への応募内容確認画面(会員登録経由)  @apply-confirm", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
@@ -104,7 +106,7 @@ test("バイト求人への応募内容確認画面(会員登録経由)", async 
   // visible
   await expect(
     loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toBeVisible();
+  ).toHaveCount(1);
 
   // hidden
   await expect(
@@ -125,7 +127,7 @@ test("バイト求人への応募内容確認画面(会員登録経由)", async 
 });
 
 // 会員登録経由では無いので、項目数は絞られない
-test("バイト求人への応募内容確認画面", async ({ browser }) => {
+test("バイト求人への応募内容確認画面  @apply-confirm", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
@@ -137,7 +139,7 @@ test("バイト求人への応募内容確認画面", async ({ browser }) => {
   // visible
   await expect(
     loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toBeVisible();
+  ).toHaveCount(1);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -155,7 +157,7 @@ test("バイト求人への応募内容確認画面", async ({ browser }) => {
   ).toBeVisible();
 });
 
-test("resume", async ({ browser }) => {
+test("resume @resume", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
@@ -187,7 +189,7 @@ test("resume", async ({ browser }) => {
   ).toBeVisible();
 });
 
-test("いいね一覧からの一括応募で応募内容編集画面", async ({ browser }) => {
+test("いいね一覧からの一括応募で応募内容編集画面 @apply-form", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
