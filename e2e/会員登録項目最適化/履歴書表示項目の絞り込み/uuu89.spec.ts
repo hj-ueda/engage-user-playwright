@@ -20,25 +20,22 @@ test.beforeAll("login", async () => {
   await login(loginId, password, statePath);
 });
 
-const applyFormPage =
+const applyBaitoFormPage =
   "/user/apply/form/?aroute=0&work_id=860&delivery_id=0&PK=720CCF&company_id=1656";
-const applyConfirm =
+const applyBaitoConfirm =
   "/user/apply/confirm/?aroute=0&work_id=860&delivery_id=0&PK=720CCF";
 const resume = "/user/setting/resume";
 const favorite = "/user/favorite";
 
-test("バイト求人への応募内容編集画面", async ({ browser }) => {
+test("バイト求人への応募内容編集画面 @apply-form", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
-  await loggedInPage.goto(applyFormPage, { waitUntil: "load" });
+  await loggedInPage.goto(applyBaitoFormPage, { waitUntil: "load" });
 
-  await loggedInPage.waitForURL(/\/user\/apply\/form/);
+  await loggedInPage.waitForURL(/\/user\/apply\/form/, { timeout: 100 });
 
   // visible
-  await expect(
-    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toHaveCount(2);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -54,20 +51,31 @@ test("バイト求人への応募内容編集画面", async ({ browser }) => {
   await expect(
     loggedInPage.getByText("職務経歴", { exact: true })
   ).toBeVisible();
+  await expect(
+    await loggedInPage
+      .locator(".cardContent.cardContent--form")
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(2);
+
+  // hidden
+  // プロフィール内の「経験されたお仕事やスキル」
+  await expect(
+    await loggedInPage
+      .locator(".cardContent.cardContent--form")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toBeHidden();
 });
 
-test("バイト求人への応募内容確認画面", async ({ browser }) => {
+test("バイト求人への応募内容確認画面 @apply-confirm", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
-  await loggedInPage.goto(applyConfirm, { waitUntil: "load" });
+  await loggedInPage.goto(applyBaitoConfirm, { waitUntil: "load" });
 
-  await loggedInPage.waitForURL(/\/user\/apply\/confirm/);
+  await loggedInPage.waitForURL(/\/user\/apply\/confirm/, { timeout: 100 });
 
   // visible
-  await expect(
-    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true }) // 職務経歴（2）では登録していないので1件のみ
-  ).toHaveCount(1);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -83,9 +91,24 @@ test("バイト求人への応募内容確認画面", async ({ browser }) => {
   await expect(
     loggedInPage.getByText("職務経歴", { exact: true })
   ).toBeVisible();
+  await expect(
+    await loggedInPage
+      .locator(".dataSetTable")
+      .nth(1)
+      .getByText("経験されたお仕事やスキル", { exact: true }) // 職務経歴（2）では登録していないので1件のみ
+  ).toHaveCount(1);
+
+  // hidden
+  // プロフィール内の「経験されたお仕事やスキル」
+  await expect(
+    await loggedInPage
+      .locator(".dataSetTable")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toBeHidden();
 });
 
-test("resume", async ({ browser }) => {
+test("resume @resume", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
@@ -94,9 +117,6 @@ test("resume", async ({ browser }) => {
   await loggedInPage.waitForURL(/\/user\/setting\/resume/);
 
   // visible
-  await expect(
-    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toHaveCount(2);
   await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
@@ -112,15 +132,29 @@ test("resume", async ({ browser }) => {
   await expect(
     loggedInPage.getByText("職務経歴", { exact: true })
   ).toBeVisible();
+  await expect(
+    await loggedInPage
+      .locator(".cardContent.cardContent--form")
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(2);
+
+  // hidden
+  // プロフィール内の「経験されたお仕事やスキル」
+  await expect(
+    await loggedInPage
+      .locator(".cardContent.cardContent--form")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toBeHidden();
 });
 
-test("いいね一覧からの一括応募で応募内容確認画面", async ({ browser }) => {
+test("いいね一覧からの一括応募で応募内容確認画面 @apply-confirm", async ({ browser }) => {
   const context = await browser.newContext({ storageState: statePath });
   const loggedInPage = await context.newPage();
 
   await loggedInPage.goto(favorite, { waitUntil: "load" });
 
-  await loggedInPage.waitForURL(/\/user\/favorite/);
+  await loggedInPage.waitForURL(/\/user\/favorite/, { timeout: 100 });
 
   await loggedInPage.waitForResponse(/\/user\/favorite\/list/);
   await expect(
@@ -133,9 +167,6 @@ test("いいね一覧からの一括応募で応募内容確認画面", async ({
 
   // visible
   await expect(
-    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
-  ).toHaveCount(1); // 職務経歴（2）では登録していないので1件のみ
-  await expect(
     loggedInPage.getByText("最終学歴", { exact: true })
   ).toBeVisible();
   await expect(
@@ -150,4 +181,16 @@ test("いいね一覧からの一括応募で応募内容確認画面", async ({
   await expect(
     loggedInPage.getByText("職務経歴", { exact: true })
   ).toBeVisible();
+  await expect(
+    await loggedInPage.getByText("経験されたお仕事やスキル", { exact: true })
+  ).toHaveCount(1); // 職務経歴（2）では登録していないので1件のみ
+
+  // hidden
+  // プロフィール内の「経験されたお仕事やスキル」
+  await expect(
+    await loggedInPage
+      .locator(".dataSetTable")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
+  ).toBeHidden();
 });
