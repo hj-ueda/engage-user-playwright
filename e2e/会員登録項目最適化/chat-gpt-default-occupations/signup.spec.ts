@@ -30,12 +30,12 @@ test.beforeAll("login", async () => {
 
 test("resume 1", async ({ browser }) => {  
   const context = await browser.newContext({ storageState: statePath });
-  const loggedInPage = await context.newPage()
+  const page = await context.newPage()
   
-  await loggedInPage.goto(resume, { waitUntil: 'load' })
-  await loggedInPage.waitForLoadState('load')
-  await loggedInPage.waitForURL(/user\/setting\/resume/, { timeout: 120000 })
-  await expect(loggedInPage.getByRole('button', { name: '+生成AIで作成する' }).first()).toBeVisible()
+  await page.goto(resume, { waitUntil: 'load' })
+  await page.waitForLoadState('load')
+  await page.waitForURL(/user\/setting\/resume/, { timeout: 120000 })
+  await expect(page.getByRole('button', { name: '+生成AIで作成する' }).first()).toBeVisible()
   
   await context.close()
 });
