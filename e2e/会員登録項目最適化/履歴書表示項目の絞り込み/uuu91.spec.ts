@@ -34,11 +34,15 @@ test("バイト求人への求人への応募内容確認画面 @apply-confirm",
 
   await page.goto(applyBaitoConfirm, { waitUntil: "load" });
 
-  await page.waitForURL(/\/user\/apply\/confirm/)
+  await page.waitForURL(/\/user\/apply\/confirm/, { timeout: 100 })
 
   // visible
+  // プロフィール内の「経験されたお仕事やスキル」
   await expect(
-    page.getByText("経験されたお仕事やスキル", { exact: true })
+    page
+      .locator(".dataSetTable")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
   await expect(
     page.getByText("最終学歴", { exact: true })
@@ -68,8 +72,12 @@ test("バイト求人への求人への応募内容編集画面 @apply-form", as
   await page.waitForURL(/\/user\/apply\/form/)
 
   // visible
+  // プロフィール内の「経験されたお仕事やスキル」
   await expect(
-    page.getByText("経験されたお仕事やスキル", { exact: true })
+    page
+      .locator(".dataSetTable")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
   await expect(
     page.getByText("最終学歴", { exact: true })
@@ -100,8 +108,12 @@ test("求人への応募内容確認画面 @apply-confirm", async ({ browser }) 
   await page.waitForURL(/\/user\/apply\/confirm/)
 
   // visible
+  // プロフィール内の「経験されたお仕事やスキル」
   await expect(
-    page.getByText("経験されたお仕事やスキル", { exact: true })
+    page
+      .locator(".dataSetTable")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
   await expect(
     page.getByText("最終学歴", { exact: true })
@@ -132,8 +144,12 @@ test("求人への応募内容編集画面 @apply-form", async ({ browser }) => 
   await page.waitForURL(/\/user\/apply\/form/)
 
   // visible
+  // プロフィール内の「経験されたお仕事やスキル」
   await expect(
-    page.getByText("経験されたお仕事やスキル", { exact: true })
+    await page
+      .locator(".cardContent.cardContent--form")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
   await expect(
     page.getByText("最終学歴", { exact: true })
@@ -160,11 +176,18 @@ test("resume @resume", async ({ browser }) => {
 
   await page.goto(resume, { waitUntil: "load" });
 
-  await page.waitForURL(/\/user\/setting\/resume/);
+  await page.waitForURL(/\/user\/setting\/resume/, { timeout: 100 });
 
   // visible
   await expect(
     page.getByText("最終学歴", { exact: true })
+  ).toBeVisible();
+  // プロフィール内の「経験されたお仕事やスキル」
+  await expect(
+    await page
+      .locator(".cardContent.cardContent--form")
+      .first()
+      .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
 
   // hidden
@@ -180,13 +203,6 @@ test("resume @resume", async ({ browser }) => {
   await expect(
     page.getByText("職務経歴", { exact: true })
   ).toBeHidden();
-  // プロフィール内の「経験されたお仕事やスキル」
-  await expect(
-    await page
-      .locator(".cardContent.cardContent--form")
-      .first()
-      .getByText("経験されたお仕事やスキル", { exact: true })
-  ).toBeVisible();
 });
 
 // いいねが0件
