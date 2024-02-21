@@ -171,12 +171,12 @@ test("いいね一覧からの一括応募で応募内容確認画面 @apply-con
       .first()
       .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
-
-  // hidden
-  await expect(page.getByText("転職経験", { exact: true })).toBeHidden();
+  await expect(page.getByText("転職経験", { exact: true })).toBeVisible();
   await expect(
     page.getByText("現在(直近)の経験職種", { exact: true })
-  ).toBeHidden();
-  await expect(page.getByText("直近の年収", { exact: true })).toBeHidden();
+  ).toBeVisible();
+  await expect(page.getByText("直近の年収", { exact: true })).toBeVisible();
+
+  // hidden
   await expect(page.getByText("職務経歴", { exact: true })).toBeHidden();
 });
