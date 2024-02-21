@@ -152,7 +152,8 @@ test("いいね一覧からの一括応募で応募内容確認画面 @apply-con
 
   await page.waitForURL(/\/user\/favorite/, { timeout: 100 });
 
-  await page.waitForResponse(/\/user\/favorite\/list/);
+  await expect(page.locator(".loading").first()).toBeHidden({ timeout: 30000 });
+
   await expect(
     (await page.getByRole("link", { name: "応募へ進む" }).count()) >= 1
   ).toBeTruthy();
