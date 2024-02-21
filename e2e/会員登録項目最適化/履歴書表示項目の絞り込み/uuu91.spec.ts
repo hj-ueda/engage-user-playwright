@@ -75,7 +75,7 @@ test("バイト求人への求人への応募内容編集画面 @apply-form", as
   // プロフィール内の「経験されたお仕事やスキル」
   await expect(
     page
-      .locator(".dataSetTable")
+      .locator(".cardContent.cardContent--form")
       .first()
       .getByText("経験されたお仕事やスキル", { exact: true })
   ).toBeVisible();
