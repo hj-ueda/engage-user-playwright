@@ -10,15 +10,19 @@ test.describe("検索画面", () => {
     await page.waitForLoadState("load");
 
     const searchFormArea = await page.locator("#searchFormArea");
-		
-		await expect(searchFormArea.locator('.form.form--kodawari')).toContainText('きぎょう')
-		
+
+    await expect(searchFormArea.locator(".form.form--kodawari")).toContainText(
+      "きぎょう"
+    );
+
     // フィルタボタンの確認
     // const modalButton = await searchFormArea
     //   .locator(".tagBtn")
-		// 	.nth(6)
+    // 	.nth(6)
     //   .getByText("きぎょう", { exact: false });
-		const modalButton = await page.locator('.kodawariFormWrap > .kodawariScrollArea > .tagSet > div:nth-child(6)')
+    const modalButton = await page.locator(
+      ".kodawariFormWrap > .kodawariScrollArea > .tagSet > div:nth-child(6)"
+    );
     await expect(modalButton).toBeVisible();
 
     await modalButton.click();
@@ -36,24 +40,24 @@ test.describe("検索画面", () => {
     await expect(
       modal.getByPlaceholder("企業名を入力", { exact: true })
     ).toHaveValue("きぎょう");
-		
-		await modal.getByText('リセット', { exact: false }).click()
+
+    await modal.getByText("リセット", { exact: false }).click();
     await expect(
       modal.getByPlaceholder("企業名を入力", { exact: true })
     ).not.toHaveValue("きぎょう");
-		
-		// モーダルを閉じる
-		await modal.locator('.closeLink').click()
-		await expect(
+
+    // モーダルを閉じる
+    await modal.locator(".closeLink").click();
+    await expect(
       modal.getByText("企業名を指定", { exact: true })
     ).not.toBeVisible();
-		
-		/** バツボタンが押せない */
-		// await page.locator('.kodawariFormWrap .closeLink').click({ timeout: 10 })
-		// // 企業名を省いた検索
-		// await page.waitForLoadState('load')
-		// // await page.getByRole('link', { name: crossString })
-		// const expression = 'company_name=' + encodeURIComponent('きぎょう')
+
+    /** バツボタンが押せない */
+    // await page.locator('.kodawariFormWrap .closeLink').click({ timeout: 10 })
+    // // 企業名を省いた検索
+    // await page.waitForLoadState('load')
+    // // await page.getByRole('link', { name: crossString })
+    // const expression = 'company_name=' + encodeURIComponent('きぎょう')
     // await expect(page).not.toHaveURL(new RegExp(expression), { timeout: 10 })
   });
 });
