@@ -4,9 +4,22 @@ import { STORAGE_STATE_DIR } from "@/playwright.config";
 
 test.describe("検索画面", () => {
   test("企業名を指定した検索", async ({ page }) => {
+    const work_expression =
+      /\/user\/api\/search\/result_work_list.+companyName=%E3%81%8D%E3%81%8E%E3%82%87%E3%81%86/;
+    const map_expression =
+      /\/user\/api\/search\/map_work_list.+companyName=%E3%81%8D%E3%81%8E%E3%82%87%E3%81%86/;
+
+    const workListRequestPromise = page.waitForRequest(work_expression, {
+      timeout: 10000,
+    });
+    const mapListRequestPromise = page.waitForRequest(map_expression, {
+      timeout: 10000,
+    });
+
     const path =
       "/user/search/?from=top&keyword=&companyName=きぎょう&salary_0=0&span=0&PK=&token=6631d504415f1&area=5&job=&distanceIndex=&wish_no=#/";
     await page.goto(path);
+
     await page.waitForLoadState("load");
 
     const searchFormArea = await page.locator("#searchFormArea");
@@ -51,6 +64,8 @@ test.describe("検索画面", () => {
     await expect(
       modal.getByText("企業名を指定", { exact: true })
     ).not.toBeVisible();
+
+    await Promise.all([workListRequestPromise, mapListRequestPromise]);
 
     /** バツボタンが押せない */
     // await page.locator('.kodawariFormWrap .closeLink').click({ timeout: 10 })
